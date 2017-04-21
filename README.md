@@ -18,6 +18,10 @@ make
 sudo make install
 `````
 
+##### Screenshot
+![KDiff Screenshot](http://jsalatas.ictpro.gr/kdiff.png "KDiff Screenshot")
+
+
 #### Reporting Bugs and Wishes 
 
 Please report any bugs or wishes to [kdiff's issues page at github](https://github.com/jsalatas/kdiff/issues).
