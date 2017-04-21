@@ -1,0 +1,25 @@
+ecm_install_icons(
+    ICONS
+        16-mimetypes-kdiff-equal.svg
+        16-mimetypes-kdiff-folder.svg
+        16-mimetypes-kdiff-folders.svg
+        16-mimetypes-kdiff-file.svg
+        16-mimetypes-kdiff-missing.svg
+        22-mimetypes-kdiff-equal.svg
+        22-mimetypes-kdiff-folder.svg
+        22-mimetypes-kdiff-folders.svg
+        22-mimetypes-kdiff-file.svg
+        22-mimetypes-kdiff-missing.svg
+        32-mimetypes-kdiff-equal.svg
+        32-mimetypes-kdiff-folder.svg
+        32-mimetypes-kdiff-folders.svg
+        32-mimetypes-kdiff-file.svg
+        32-mimetypes-kdiff-missing.svg
+        48-mimetypes-kdiff-equal.svg
+        48-mimetypes-kdiff-folder.svg
+        48-mimetypes-kdiff-folders.svg
+        48-mimetypes-kdiff-file.svg
+        48-mimetypes-kdiff-missing.svg
+    DESTINATION
+        ${KDIFF_DATA_INSTALL_DIR}/icons
+)

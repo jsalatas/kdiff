@@ -1,0 +1,9 @@
+[Desktop Entry]
+GenericComment=A part to graphically show the difference between 2 files
+Name=KDiffPart
+MimeType=text/x-patch;
+ServiceTypes=KDiff/ViewPart,KParts/ReadWritePart,KParts/ReadOnlyPart
+X-KDE-Library=kdiffpart
+Type=Service
+Icon=kompare
+InitialPreference=10

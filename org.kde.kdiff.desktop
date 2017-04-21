@@ -1,0 +1,12 @@
+# KDE Config File
+[Desktop Entry]
+Type=Application
+Name=KDiff
+GenericName=Diff/Patch Frontend
+MimeType=text/x-patch;
+Exec=kdiff
+Icon=kompare
+Terminal=false
+Categories=Qt;KDE;Development;
+InitialPreference=10
+X-DBUS-ServiceName=org.kde.kdiff

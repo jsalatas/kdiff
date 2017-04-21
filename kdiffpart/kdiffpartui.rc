@@ -1,0 +1,47 @@
+<!DOCTYPE kpartgui SYSTEM "kpartgui.dtd">
+<kpartgui name="kdiff_part" version="6">
+
+  <MenuBar>
+    <Menu name="file" >
+      <text>&amp;File</text>
+      <Action name="save" />
+      <Separator/>
+      <Action name="file_reload_files" />
+      <Action name="file_reload_diffs" />
+    </Menu>
+    <Menu name="edit" >
+      <text>&amp;Edit</text>
+      <Action name="undo" />
+      <Action name="redo" />
+      <Separator/>
+      <Action name="previous_difference" />
+      <Action name="next_difference" />
+      <Separator/>
+      <Action name="apply_difference" />
+      <Action name="apply_all_differences" />
+    </Menu>
+    <Menu name="view" >
+      <text>&amp;View</text>
+      <Action name="show_equal" />
+      <Action name="show_missing" />
+      <Action name="show_folders" />
+    </Menu>
+  <Menu name="settings"><text>&amp;Settings</text>
+    <Action name="options_configure" />
+  </Menu>
+  </MenuBar>
+  <ToolBar name="mainToolBar" noMerge="1">
+    <text>Main Toolbar</text>
+      <Action name="saveSlot" />
+      <Separator />
+      <Action name="show_equal" />
+      <Action name="show_missing" />
+      <Action name="show_folders" />
+      <Separator />
+      <Action name="previous_difference" />
+      <Action name="next_difference" />
+      <Separator />
+      <Action name="apply_difference" />
+      <Action name="apply_all_differences" />
+  </ToolBar>
+</kpartgui>

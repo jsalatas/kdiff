@@ -1,0 +1,13 @@
+alpha (initial prelease phase)
+------------------------------
+- Command line
+- Match End of Line (Unix/DOS/Mac)
+- Save Copy as
+
+
+later
+--------------
+- Create a plugin for KDevelop
+- intraline diffs are wrong at some cases. Need to fix libkomparediff2
+- Account for Intraline diffs when changing cursor positions
+- Compare commits in a git directory
