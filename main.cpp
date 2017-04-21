@@ -21,7 +21,7 @@ int main (int argc, char *argv[])
             KAboutLicense::GPL,
             i18n("(c) 2017 John Salatas"),
             nullptr,
-            QStringLiteral("http://jsalatas.ictpro.gr/"),
+            QStringLiteral("https://github.com/jsalatas/kdiff"),
             QStringLiteral("kdiffbugs@ictpro.gr"));
     aboutData.addAuthor(i18n("John Salatas"), QString(), QStringLiteral("jsalatas@gmail.com"),
                         QStringLiteral("http://jsalatas.ictpro.gr/"));
