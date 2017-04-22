@@ -3,7 +3,8 @@ alpha (initial prelease phase)
 - Command line
 - Match End of Line (Unix/DOS/Mac)
 - Save Copy as
-
+- Export/View as patch
+- Reference view (see https://github.com/jsalatas/kdiff/issues/3)
 
 later
 --------------
