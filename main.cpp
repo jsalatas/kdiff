@@ -22,7 +22,7 @@ int main (int argc, char *argv[])
             i18n("(c) 2017 John Salatas"),
             nullptr,
             QStringLiteral("https://github.com/jsalatas/kdiff"),
-            QStringLiteral("kdiffbugs@ictpro.gr"));
+            QStringLiteral("https://github.com/jsalatas/kdiff/issues"));
     aboutData.addAuthor(i18n("John Salatas"), QString(), QStringLiteral("jsalatas@gmail.com"),
                         QStringLiteral("http://jsalatas.ictpro.gr/"));
     KAboutData::setApplicationData(aboutData);
