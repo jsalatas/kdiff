@@ -1,15 +1,16 @@
-This library is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
+This application and its libraries is free software; you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License as published by the Free Software
+Foundation; either version 2 of the License, or (at your
+option) any later version.
 
 See COPYING.GPL2 and/or COPYING.GPL3 for details.
 
-
-Some parts of this library can also be redistributed and/or modified
-under the terms of the GNU Library or Lesser General Public License
-as published by the Free Software Foundation; either version 2 of
-the License, or (at your option) any later version.
+Some parts of this application and its libraries can also be
+redistributed and/or modified under the terms of the GNU Library
+or Lesser General Public License as published by the Free Software
+Foundation; either version 2 of the License, or (at your option)
+any later version.
 
 See COPYING.LGPL2, COPYING.LGPL2.1 and/or COPYING.LGPL3 for details.
 
@@ -20,12 +21,12 @@ version 2.1 and/or Section 2b of the GNU Lesser General Public
 License version 3.
 
 
-The CMake scripts included with this library are also free software;
-you can redistribute them and/or modify them under the terms of the
-BSD License reproduced in COPYING-CMAKE-SCRIPTS.
+The CMake scripts included with this application and its libraries
+are also free software; you can redistribute them and/or modify
+them under the terms of the BSD License reproduced in
+COPYING-CMAKE-SCRIPTS.
 
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+This application and its libraries are distributed in the hope that
+they will be useful, but WITHOUT ANY WARRANTY; without even the
+implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+PURPOSE. See the GNU General Public License for more details.
