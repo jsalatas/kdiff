@@ -176,7 +176,7 @@ void KDiffPart::openFiles(const QUrl &source, const QUrl &destination) {
     m_sourceUrl = source;
     m_destinationUrl = destination;
     m_diffUrl = nullptr;
-    if (m_fileView->closeDocuments()) {
+    if (m_fileView->closeDocuments(true)) {
         m_reloadDiffs->setEnabled(true);
         m_fileView->reset();
         getDiffs();
@@ -243,11 +243,9 @@ void KDiffPart::getDiffs() {
             break;
     }
 
-    if(m_fileView->closeDocuments()) {
-        m_filesNavigator->initialize(nullptr, m_info);
-        m_backupCreated = false;
-        calculateDiff();
-    }
+    m_filesNavigator->initialize(nullptr, m_info);
+    m_backupCreated = false;
+    calculateDiff();
 }
 
 bool KDiffPart::fetchURL(const QUrl &url, bool addToSource) {
@@ -323,13 +321,14 @@ bool KDiffPart::isDir(const QString &url) const {
 }
 
 void KDiffPart::reloadDiffs() {
-    m_fileView->closeDocuments();
+    m_fileView->closeDocuments(true);
     m_fileView->reset();
     getDiffs();
 }
 
 bool KDiffPart::queryClose() {
-    return m_fileView->closeDocuments();
+    // FIXME: this might be closeDocuments(false)
+    return m_fileView->closeDocuments(true);
 }
 
 void KDiffPart::openDiff(const QUrl &diffUrl) {
@@ -337,7 +336,7 @@ void KDiffPart::openDiff(const QUrl &diffUrl) {
     m_sourceUrl = nullptr;
     m_destinationUrl = nullptr;
     m_diffUrl = diffUrl;
-    if (m_fileView->closeDocuments()) {
+    if (m_fileView->closeDocuments(true)) {
         m_reloadDiffs->setEnabled(true);
         m_fileView->reset();
         getDiffs();
@@ -369,7 +368,7 @@ void KDiffPart::openDiffAndFiles(const QUrl &diffFile, const QUrl &destination) 
     m_destinationUrl = destination;
     m_diffUrl = diffFile;
 
-    if (m_fileView->closeDocuments()) {
+    if (m_fileView->closeDocuments(true)) {
         m_reloadDiffs->setEnabled(true);
         m_fileView->reset();
         getDiffs();

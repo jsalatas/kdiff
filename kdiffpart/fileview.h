@@ -132,7 +132,7 @@ protected:
     void showEvent(QShowEvent *event) Q_DECL_OVERRIDE;
 
 public:
-    bool closeDocuments();
+    bool closeDocuments(bool dontSync);
     QList<QPolygon>* overlays();
     QRect viewRect();
     void reset();

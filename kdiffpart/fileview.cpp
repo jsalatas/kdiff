@@ -293,13 +293,13 @@ void FileView::showEvent(QShowEvent *event) {
     resizeWidgets();
 }
 
-bool FileView::closeDocuments() {
-//    m_destinationText->document()->blockSignals(true);
+bool FileView::closeDocuments(bool dontSync) {
+    m_destinationText->document()->blockSignals(dontSync);
     if(!m_destinationText->document()->closeUrl()) {
-//        m_destinationText->document()->blockSignals(false);
+        m_destinationText->document()->blockSignals(false);
         return false;
     }
-//    m_destinationText->document()->blockSignals(false);
+    m_destinationText->document()->blockSignals(false);
     m_fileNavigatorItem = nullptr;
     m_destinationText->setEnabled(false);
     m_destinationText->update();
@@ -896,6 +896,12 @@ void FileView::alignView(View *view, int documentLine, int visibleLine) {
 }
 
 void FileView::reset() {
+    if(m_fileNavigatorItem) {
+        disconnect(this, 0, m_fileNavigatorItem->model(), 0);
+        disconnect(m_fileNavigatorItem->model(), 0, this, 0);
+        m_fileNavigatorItem = nullptr;
+    }
+
     m_reload->setEnabled(false);
     m_applyDiff->setEnabled(false);
     m_nextDiff->setEnabled(false);
@@ -1353,7 +1359,7 @@ void FileView::focusOut(KTextEditor::View* view) {
 void FileView::currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *) {
     if(!current || m_fileNavigatorItem == current) {
         if(!current) {
-            if(closeDocuments()) {
+            if(closeDocuments(false)) {
                 m_diffScrollBar->update(nullptr, 0, 0);
                 if(m_fileNavigatorItem != nullptr) {
                     disconnect(this, 0, m_fileNavigatorItem, 0);
@@ -1374,7 +1380,7 @@ void FileView::currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *) {
     }
 
     if(!current) {
-        if(!closeDocuments()) {
+        if(!closeDocuments(false)) {
             emit selectItem(m_fileNavigatorItem);
         }
         return;

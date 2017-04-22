@@ -299,7 +299,7 @@ void FileNavigator::fillTree(const DiffModelMap *modelList) {
 bool FileNavigator::expanded(const DiffModelMap *modelList) {
     return (exists(m_sourceBasePath) && isDir(m_sourceBasePath) &&
             exists(m_destinationBasePath) && isDir(m_destinationBasePath)) ||
-           (modelList && modelList->size() > 0);
+           (modelList && modelList->size() > 1);
 }
 
 bool FileNavigator::exists(const QString &url) const {

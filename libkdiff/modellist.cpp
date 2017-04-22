@@ -454,7 +454,7 @@ bool ModelList::blendOriginalIntoModelList(const QString& localURL)
     } else if(fi.isFile()) { // is a file
         fileContents = readFile(localURL);
 
-        result = result && blendFile((*m_models)[0], fileContents);
+        result = result && blendFile(m_models->begin().value(), fileContents);
     }
 
     return result;
@@ -634,12 +634,14 @@ void ModelList::setBasePaths() {
             break;
     }
 
-    if (!m_sourceDisplayBasePath.endsWith(QDir::separator())) {
-        m_sourceDisplayBasePath += QDir::separator();
-    }
+    if(m_info->mode != Compare::ComparingFiles && m_info->mode != Compare::BlendingFile) {
+        if(!m_sourceDisplayBasePath.endsWith(QDir::separator())) {
+            m_sourceDisplayBasePath += QDir::separator();
+        }
 
-    if (!m_destinationDisplayBasePath.endsWith(QDir::separator())) {
-        m_destinationDisplayBasePath += QDir::separator();
+        if(!m_destinationDisplayBasePath.endsWith(QDir::separator())) {
+            m_destinationDisplayBasePath += QDir::separator();
+        }
     }
 
     if (m_sourceBasePath.isEmpty() || m_destinationBasePath.isEmpty()) {
@@ -807,7 +809,15 @@ void ModelList::collectLocalFiles() {
 
             }
         }
-    };
+    }
+
+    if(m_info->mode == Compare::BlendingFile || m_info->mode == Compare::ComparingFiles) {
+        DiffModel *model = m_models->begin().value();
+        model->setSourceFile(m_sourceDisplayBasePath);
+        model ->sourceUrl(QUrl::fromUserInput(m_sourceDisplayBasePath));
+        model->setDestinationFile(m_destinationDisplayBasePath);
+        model ->destinationUrl(QUrl::fromUserInput(m_destinationDisplayBasePath));
+    }
 }
 const QString& ModelList::sourceBasePath() const
 {
