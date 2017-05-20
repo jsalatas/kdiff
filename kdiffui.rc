@@ -8,6 +8,7 @@
       <Action name="open_diff" />
       <Action name="blend_diff" />
       <Merge />
+      <Action name="swap" />
     </Menu>
     <Merge />
   <Menu name="settings"><text>&amp;Settings</text>

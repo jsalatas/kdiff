@@ -101,6 +101,12 @@ void KDiffMainWindow::setupActions() {
     a = actionCollection()->addAction(KStandardAction::KeyBindings, m_viewPart, SLOT(editKeys()));
     a->setWhatsThis(i18n("Configure the application's keyboard shortcut assignments."));
 
+    swapAction = new QAction(this);
+    swapAction->setEnabled(false);
+    swapAction->setText(i18n("&Swap Source and Destination"));
+    actionCollection()->addAction("swap", swapAction);
+    connect(swapAction, SIGNAL(triggered(bool)), this, SLOT(swap()));
+
 }
 
 void KDiffMainWindow::openFiles() {
@@ -115,6 +121,7 @@ void KDiffMainWindow::openFiles() {
         QUrl destination = QUrl(settings->recentDestinationUrls().at(0));
 
         viewPart()->openFiles(source, destination);
+        swapAction->setEnabled(true);
     }
 }
 
@@ -127,6 +134,7 @@ void KDiffMainWindow::openDiff() {
         QUrl diffUrl = QUrl(settings->recentPatchUrls().at(0));
 
         viewPart()->openDiff(diffUrl);
+        swapAction->setEnabled(false);
     }
 
 }
@@ -143,6 +151,7 @@ void KDiffMainWindow::openDiffAndFiles() {
         QUrl destination = QUrl(settings->recentDestinationUrls().at(0));
 
         viewPart()->openDiffAndFiles(diffUrl, destination);
+        swapAction->setEnabled(false);
     }
 
 }
@@ -197,4 +206,10 @@ void KDiffMainWindow::closeEvent(QCloseEvent *event) {
 KDiffInterface* KDiffMainWindow::viewPart() const
 {
     return qobject_cast<KDiffInterface *>(m_viewPart);
+}
+
+void KDiffMainWindow::swap() {
+    QUrl source = QUrl(settings->recentSourceUrls().at(0));
+    QUrl destination = QUrl(settings->recentDestinationUrls().at(0));
+    viewPart()->openFiles(destination, source);
 }

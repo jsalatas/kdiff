@@ -33,6 +33,7 @@ private slots:
     void editToolbars();
     void aboutEditor();
     void toggleMenuBar();
+    void swap();
 
 protected:
     void closeEvent(QCloseEvent *event) Q_DECL_OVERRIDE;
@@ -43,6 +44,7 @@ private:
     KParts::ReadWritePart* m_viewPart;
     KDiffInterface* viewPart() const;
     void setupActions();
+    QAction* swapAction;
 };
 
 #endif //KDIFF_MAINWINDOW_H
