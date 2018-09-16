@@ -150,8 +150,14 @@ View *FileView::initView() {
     ConfigInterface *docIface = qobject_cast<ConfigInterface *>(doc);
     docIface->setConfigValue("on-the-fly-spellcheck", false);
 
-    for (int i = 0; i < Settings::disabledActions().length(); ++i) {
-        view->action(Settings::disabledActions().at(i).toLatin1().data())->setEnabled(false);
+    QStringList da = Settings::disabledActions();
+
+    for (int i = 0; i < da.length(); ++i) {
+        QAction *a = view->action(da.at(i).toLatin1().data());
+        if( a != NULL) {
+            a->setEnabled(false);
+        }
+
     }
 
     return view;
