@@ -1,14 +1,16 @@
 alpha (initial prelease phase)
 ------------------------------
-- Command line
+- Integration with gitkraken - Command line
+- Integration with gitkraken: Diff tool (Compare commits in a git directory)
 - Match End of Line (Unix/DOS/Mac)
 - Save Copy as
 - Export/View as patch
 - Reference view (see https://github.com/jsalatas/kdiff/issues/3)
+- Integration with gitkraken: Merge tool
 
 later
 --------------
 - Create a plugin for KDevelop
 - intraline diffs are wrong at some cases. Need to fix libkomparediff2
 - Account for Intraline diffs when changing cursor positions
-- Compare commits in a git directory
+
