@@ -1401,30 +1401,40 @@ void FileView::currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *) {
     setUpdatesEnabled(false);
     m_destinationText->document()->setMode("Normal");
 
-    // open destination first
-    if (m_fileNavigatorItem->isDir()) {
-        m_destinationText->document()->closeUrl();
-        if (m_fileNavigatorItem->isDir()) {
-            m_destinationText->setEnabled(false);
-        }
-    } else {
-        m_destinationText->document()->openUrl(QUrl::fromLocalFile(m_fileNavigatorItem->localDestination()));
-        m_destinationText->setEnabled(true);
-        m_destinationText->document()->setReadWrite(false);
-    }
-
-    if (!m_fileNavigatorItem->sourceExists() || m_fileNavigatorItem->isDir()) {
+    if(m_fileNavigatorItem->model()->isRenamed() && !m_fileNavigatorItem->model()->sourceUrl().isValid() && !m_fileNavigatorItem->model()->destinationUrl().isValid()) {
         m_sourceText->document()->closeUrl();
-        if (m_fileNavigatorItem->isDir()) {
-            m_sourceText->setEnabled(false);
-        }
-    } else {
-        m_sourceText->document()->openUrl(QUrl::fromLocalFile(m_fileNavigatorItem->localSource()));
-        m_sourceText->setEnabled(true);
+        m_sourceText->setEnabled(false);
         m_sourceText->document()->setReadWrite(false);
-        m_destinationText->document()->setEncoding(m_sourceText->document()->encoding());
+        m_destinationText->document()->closeUrl();
+        m_destinationText->setEnabled(false);
+        m_destinationText->document()->setReadWrite(false);
+    } else {
+        // open destination first
+        if(m_fileNavigatorItem->isDir()) {
+            m_destinationText->document()->closeUrl();
+            if(m_fileNavigatorItem->isDir()) {
+                m_destinationText->setEnabled(false);
+            }
+        } else {
+            m_destinationText->document()->openUrl(QUrl::fromLocalFile(m_fileNavigatorItem->localDestination()));
+            m_destinationText->setEnabled(true);
+            m_destinationText->document()->setReadWrite(false);
+        }
+
+        if(!m_fileNavigatorItem->sourceExists() || m_fileNavigatorItem->isDir()) {
+            m_sourceText->document()->closeUrl();
+            if(m_fileNavigatorItem->isDir()) {
+                m_sourceText->setEnabled(false);
+            }
+        } else {
+            m_sourceText->document()->openUrl(QUrl::fromLocalFile(m_fileNavigatorItem->localSource()));
+            m_sourceText->setEnabled(true);
+            m_sourceText->document()->setReadWrite(false);
+            m_destinationText->document()->setEncoding(m_sourceText->document()->encoding());
+        }
+
+        m_destinationText->document()->setReadWrite(m_fileNavigatorItem->isReadWrite());
     }
-    m_destinationText->document()->setReadWrite(m_fileNavigatorItem->isReadWrite());
 
     setUpdatesEnabled(true);
     m_syncingWidgets = false;

@@ -19,6 +19,9 @@ Icons::Icons() {
     m_fileDiffIcon = getThemedIcon("kdiff-file", settings->differentColor());
     m_folderMissingIcon = getThemedIcon("kdiff-folder", settings->missingColor());
     m_fileMissingIcon = getThemedIcon("kdiff-file", settings->missingColor());
+    m_folderMovedIcon = getThemedIcon("kdiff-folder", settings->unmodifiedMovedColor());
+    m_fileModifiedMovedIcon = getThemedIcon("kdiff-file", settings->modifiedMovedColor());
+    m_fileUnmodifiedMovedIcon = getThemedIcon("kdiff-file", settings->unmodifiedMovedColor());
 }
 
 QIcon *Icons::getThemedIcon(QString iconName, QColor color) const {
@@ -59,3 +62,14 @@ const QIcon &Icons::fileMissingIcon() const {
     return *m_fileMissingIcon;
 }
 
+const QIcon &Icons::folderMovedIcon() const {
+    return *m_folderMovedIcon;
+}
+
+const QIcon &Icons::fileModifiedMovedIcon() const {
+    return *m_fileModifiedMovedIcon;
+}
+
+const QIcon &Icons::fileUnmodifiedMovedIcon() const {
+    return *m_fileUnmodifiedMovedIcon;
+}

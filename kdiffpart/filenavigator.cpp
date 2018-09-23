@@ -268,8 +268,15 @@ void FileNavigator::fillTree(const DiffModelMap *modelList) {
     auto i = modelList->begin();
     for(; i != modelList->end(); ++i) {
         DiffModel* model = i.value();
-        FileNavigatorItem* item = new FileNavigatorItem(this, model);
-        m_files->insert(item->key(), item);
+        if(model->isRenamed()) {
+            if(!m_files->contains(model->key()))  {
+                FileNavigatorItem* item = new FileNavigatorItem(this, model);
+                m_files->insert(item->key(), item);
+            }
+        } else {
+            FileNavigatorItem* item = new FileNavigatorItem(this, model);
+            m_files->insert(item->key(), item);
+        }
 
     }
 

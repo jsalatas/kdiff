@@ -559,6 +559,7 @@ bool ModelList::blendFile(DiffModel* model, const QString& fileContents)
 void ModelList::show()
 {
     setBasePaths();
+    accountForMovedFiles();
     collectLocalFiles();
     setProperties();
 
@@ -581,6 +582,26 @@ DiffModel* ModelList::find(QString key) const {
     if (i != m_models->end() && i.key() == key) {
         return i.value();
     }
+    return nullptr;
+}
+
+DiffModel* ModelList::findMoved(QString key, bool source) const {
+    auto i = m_models->begin();
+    for (; i != m_models->end(); ++i) {
+        DiffModel* model = i.value();
+        if(model->isRenamed()) {
+            if(source) {
+                if(model->renamedFrom().compare(key)) {
+                    return i.value();
+                }
+            } else {
+                if(model->renamedTo().compare(key)) {
+                    return i.value();
+                }
+            }
+        }
+    }
+
     return nullptr;
 }
 
@@ -750,6 +771,14 @@ void ModelList::createTempFiles(const QDir rootDir, bool source) {
 
 }
 
+
+void ModelList::accountForMovedFiles() {
+    auto i = m_models->begin();
+    for (; i != m_models->end(); ++i) {
+        DiffModel* model = i.value();
+    }
+}
+
 void ModelList::collectLocalFiles() {
     QMimeDatabase db;
 
@@ -769,12 +798,16 @@ void ModelList::collectLocalFiles() {
             }
             DiffModel* model = find(path);
             if(!model) {
-                model = new DiffModel();
-                m_models->insert(path, model);
-                model->key(path);
+                // Check for moved
+                model = findMoved(path, true);
+                if(!model) {
+                    model = new DiffModel();
+                    m_models->insert(path, model);
+                    model->key(path);
+                }
             }
             model->setSourceFile(filename);
-            model ->sourceUrl(QUrl::fromUserInput(m_sourceDisplayBasePath + path));
+            model ->sourceUrl(QUrl::fromUserInput(m_tmpDir->path() + QDir::separator() + "a" + QDir::separator() + m_sourceDisplayBasePath + path));
             if(!QFileInfo(m_destinationBasePath+path).exists()) {
                 model->setDestinationFile(m_destinationBasePath+path);
             }
@@ -795,18 +828,21 @@ void ModelList::collectLocalFiles() {
             }
             DiffModel* model = find(path);
             if(!model) {
-                model = new DiffModel();
-                m_models->insert(path, model);
-                model->key(path);
+                // Check for moved
+                model = findMoved(path, false);
+                if(!model) {
+                    model = new DiffModel();
+                    m_models->insert(path, model);
+                    model->key(path);
+                }
             }
             model->setDestinationFile(filename);
-            model ->destinationUrl(QUrl::fromUserInput(m_destinationDisplayBasePath + path));
+            model ->destinationUrl(QUrl::fromUserInput(m_tmpDir->path() + QDir::separator() + "b" + QDir::separator() + m_destinationDisplayBasePath + path));
             if(!QFileInfo(m_sourceBasePath+path).exists()) {
                 model->setSourceFile(m_sourceBasePath+path);
                 if(m_info->mode == Compare::BlendingDir || m_info->mode == Compare::BlendingFile) {
-                    model ->sourceUrl(QUrl::fromUserInput(m_sourceDisplayBasePath + path));
+                    model ->sourceUrl(QUrl::fromUserInput(m_tmpDir->path() + QDir::separator() + "a" + QDir::separator() + m_sourceDisplayBasePath + path));
                 }
-
             }
         }
     }
@@ -895,4 +931,8 @@ void ModelList::deleteItem(QString path, bool recursively) {
     while(i != m_models->end() && (i.key() == itemKey || (recursively && i.key().startsWith(itemKey)))) {
         i = m_models->erase(i);
     }
+}
+const QTemporaryDir* ModelList::tmpDir() const
+{
+    return m_tmpDir;
 }

@@ -45,6 +45,8 @@ public:
     const QColor &normalColor() const;
     const QColor &missingColor() const;
     const QColor &differentColor() const;
+    const QColor &modifiedMovedColor() const;
+    const QColor &unmodifiedMovedColor() const;
     bool autoAdvance() const;
     void autoAdvance(bool autoAdvance);
     bool autoSave() const;
@@ -78,6 +80,8 @@ private:
     QColor m_normalColor;
     QColor m_missingColor;
     QColor m_differentColor;
+    QColor m_modifiedMovedColor;
+    QColor m_unmodifiedMovedColor;
 
 
 };

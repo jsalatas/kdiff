@@ -66,6 +66,7 @@ private:
     void setBasePaths();
     void createTempFiles(const QDir rootDir, bool source);
     void collectLocalFiles();
+    void accountForMovedFiles();
     void setProperties();
 
 public slots:
@@ -91,6 +92,7 @@ public:
     {m_models = models;};
 
     DiffModel* find(QString key) const;
+    DiffModel* findMoved(QString key, bool source) const;
     void clear();
 
     DiffSettings* diffSettings() const;
@@ -100,6 +102,7 @@ public:
     const QString& sourceDisplayBasePath() const;
     const QString& destinationDisplayBasePath() const;
     bool isReadWrite() const;
+    const QTemporaryDir* tmpDir() const;
 
 private:
     QTemporaryFile* m_diffTemp;

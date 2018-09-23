@@ -56,7 +56,7 @@ class KDIFFPARSER_EXPORT DiffModel : public DiffProcessor
 Q_OBJECT
 public:
 
-    DiffModel(const QString& srcBaseURL, const QString& destBaseURL, QObject* parent = Q_NULLPTR);
+    DiffModel(const QString& srcBaseURL, const QString& destBaseURL, const QString& renamedFrom = QString(), const QString& renamedTo = QString(), QObject* parent = Q_NULLPTR);
     DiffModel();
     virtual ~DiffModel();
 
@@ -98,6 +98,8 @@ public:
     const QString& key() const;
     void key(const QString& m_key);
     void modelList(ModelList* modelList);
+    ModelList* modelList() const;
+
     int sourceLines() const;
     void sourceLines(int sourceLines);
     int destinationLines() const;
@@ -118,6 +120,11 @@ public:
     bool isSyncedWithDisk() const;
     QUrl sourceBaseUrl() const;
     QUrl destinationBaseUrl() const;
+    bool isRenamed() const;
+    const QString& renamedFrom() const;
+    const QString& renamedTo() const;
+    bool isUnmodifiedMoved() const;
+
 
 private:
     int fileLinesCount(QString filename) const;
@@ -156,6 +163,11 @@ private:
     ModelList* m_modelList;
     struct Compare::ComparisonInfo* m_info;
     bool m_syncedWithDisk;
+
+    QString m_renamedFrom;
+private:
+    QString m_renamedTo;
+
 };
 
 #endif

@@ -21,6 +21,9 @@ public:
     const QIcon &fileDiffIcon() const;
     const QIcon &folderMissingIcon() const;
     const QIcon &fileMissingIcon() const;
+    const QIcon &folderMovedIcon() const;
+    const QIcon &fileModifiedMovedIcon() const;
+    const QIcon &fileUnmodifiedMovedIcon() const;
 
 private:
     QIcon* m_folderNormalIcon;
@@ -29,6 +32,9 @@ private:
     QIcon* m_fileDiffIcon;
     QIcon* m_folderMissingIcon;
     QIcon* m_fileMissingIcon;
+    QIcon* m_folderMovedIcon;
+    QIcon* m_fileModifiedMovedIcon;
+    QIcon* m_fileUnmodifiedMovedIcon;
 };
 
 

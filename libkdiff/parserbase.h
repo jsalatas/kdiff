@@ -112,6 +112,10 @@ protected:
     QRegExp m_unifiedDiffHeader1;
     QRegExp m_unifiedDiffHeader2;
 
+    // Regexps for renamed files
+    QRegExp m_renameFromHeader;
+    QRegExp m_renameToHeader;
+
     QRegExp m_unifiedHunkHeader;
 
     QRegExp m_unifiedHunkBodyAdded;

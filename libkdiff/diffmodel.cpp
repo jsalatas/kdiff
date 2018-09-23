@@ -35,7 +35,7 @@
 #include "modellist.h"
 
 
-DiffModel::DiffModel(const QString& source, const QString& destination, QObject *parent)
+DiffModel::DiffModel(const QString& source, const QString& destination, const QString& renamedFrom, const QString& renamedTo, QObject *parent)
         : DiffProcessor(parent)
         , m_source(source)
         , m_destination(destination)
@@ -53,11 +53,13 @@ DiffModel::DiffModel(const QString& source, const QString& destination, QObject 
         , m_diffProcess(nullptr)
         , m_info (new Compare::ComparisonInfo())
         , m_syncedWithDisk(true)
+        , m_renamedFrom(renamedFrom)
+        , m_renamedTo(renamedTo)
 {
     splitSourceInPathAndFileName();
     splitDestinationInPathAndFileName();
 
-    m_key = StringUtils::rightCommonPartInPaths(m_source, m_destination);
+    m_key = m_source.compare("/dev/null") == 0 ? m_destination.mid(2) : (m_destination.compare("/dev/null") == 0 ? StringUtils::rightCommonPartInPaths(m_source, m_destination) : m_destination).mid(2);
 
     m_missingRanges->sourceRanges = new QList<MissingRange *>();
     m_missingRanges->destinationRanges = new QList<MissingRange *>();
@@ -162,12 +164,12 @@ int DiffModel::localeAwareCompareSource(const DiffModel& model)
 
 const QString DiffModel::sourceFile() const
 {
-    return m_sourceFile;
+    return m_renamedFrom.isNull() ? m_sourceFile : m_renamedFrom;
 }
 
 const QString DiffModel::destinationFile() const
 {
-    return m_destinationFile;
+    return m_renamedTo.isNull() ? m_destinationFile : m_renamedTo;
 }
 
 const QString DiffModel::sourcePath() const
@@ -265,6 +267,7 @@ void DiffModel::swap()
     m_source.swap(m_destination);
     m_sourcePath.swap(m_destinationPath);
     m_sourceFile.swap(m_destinationFile);
+    m_renamedFrom.swap(m_renamedTo);
 
     auto hunkIt = m_hunks.begin();
     auto hEnd = m_hunks.end();
@@ -280,8 +283,22 @@ void DiffModel::swap()
 }
 const QString& DiffModel::key() const
 {
+    if(!m_renamedTo.isNull()) {
+        return m_renamedTo;
+    }
     return m_key;
 }
+
+const QString& DiffModel::renamedFrom() const
+{
+    return m_renamedFrom;
+}
+
+const QString& DiffModel::renamedTo() const
+{
+    return m_renamedTo;
+}
+
 void DiffModel::key(const QString& m_key)
 {
     DiffModel::m_key = m_key;
@@ -316,6 +333,11 @@ bool DiffModel::isReadWrite() const
 bool DiffModel::isDir() const {
     QFileInfo sourceFileInfo(m_source);
     QFileInfo destinationFileInfo(m_destination);
+
+    if(!m_renamedFrom.isNull() || !m_renamedTo.isNull()) {
+        sourceFileInfo = QFileInfo(m_renamedFrom);
+        destinationFileInfo= QFileInfo(m_renamedTo);
+    }
     return (sourceFileInfo.exists() && sourceFileInfo.isDir()) ||
            (destinationFileInfo.exists() && destinationFileInfo.isDir());
 }
@@ -360,6 +382,9 @@ void DiffModel::textChanged(const QString text) {
         m_tmpDir = new QTemporaryDir(QDir::tempPath() + "/kdiff");
     }
     QString filename = m_tmpDir->path() + QDir::separator() + m_destinationFile;
+    if(!m_renamedTo.isNull()) {
+        filename = m_tmpDir->path() + QDir::separator() + "b" + QDir::separator() + m_renamedTo;
+    }
     QSaveFile file(filename);
     file.open(QIODevice::WriteOnly);
 
@@ -397,10 +422,13 @@ void DiffModel::updateModel(QString filename) {
     m_diffProcess.data()->blockSignals(false);
     m_diffProcess->start();
 }
+
+
 void DiffModel::modelList(ModelList* modelList)
 {
     m_modelList = modelList;
 }
+
 
 Compare::ComparisonInfo* DiffModel::comparisonInfo() const
 {
@@ -449,13 +477,13 @@ void DiffModel::replace(DiffModel* newModel) {
     delete newModel->m_lineMapper;
 
     if(QFileInfo(m_source).exists()) {
-        m_sourceUrl = QUrl::fromUserInput(m_modelList->sourceDisplayBasePath() + m_key);
+        m_sourceUrl = QUrl::fromUserInput(m_modelList->tmpDir()->path() + QDir::separator() + "a" + QDir::separator() + m_modelList->sourceDisplayBasePath() + m_key);
     } else {
         m_sourceUrl = QUrl();
     }
 
     if(QFileInfo(m_destination).exists()) {
-        m_destinationUrl = QUrl::fromUserInput(m_modelList->destinationDisplayBasePath() + m_key);
+        m_destinationUrl = QUrl::fromUserInput(m_modelList->tmpDir()->path() + QDir::separator() + "b" + QDir::separator() + m_modelList->destinationDisplayBasePath() + m_key);
     } else {
         m_destinationUrl = QUrl();
     }
@@ -505,4 +533,16 @@ void DiffModel::setToEqual()
 bool DiffModel::isSyncedWithDisk() const
 {
     return m_syncedWithDisk;
+}
+bool DiffModel::isRenamed() const
+{
+    return !m_renamedFrom.isNull() || !m_renamedTo.isNull();
+}
+ModelList* DiffModel::modelList() const
+{
+    return m_modelList;
+}
+
+bool DiffModel::isUnmodifiedMoved() const {
+    return !m_renamedFrom.isNull() && !m_renamedTo.isNull() && !m_sourceUrl.isValid() && !m_destinationUrl.isValid();
 }

@@ -29,6 +29,7 @@ int main (int argc, char *argv[])
     app.setWindowIcon(QIcon::fromTheme(QStringLiteral("kompare")));
 
     QCommandLineParser parser;
+    // TODO: need to parse parameters from the command line
     parser.addHelpOption();
     parser.addVersionOption();
     aboutData.setupCommandLine(&parser);
@@ -36,6 +37,7 @@ int main (int argc, char *argv[])
     aboutData.processCommandLine(&parser);
 
     KDiffMainWindow* window = new KDiffMainWindow();
+    // TODO: need to pass parsed parameters from the command line
 
     window->show();
 

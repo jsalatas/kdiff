@@ -103,6 +103,9 @@ ParserBase::ParserBase(const QStringList& diff)
     m_unifiedHunkBodyRemoved.setPattern("-(.*)");
     m_unifiedHunkBodyContext.setPattern(" (.*)");
     m_unifiedHunkBodyLine.setPattern("([-+ ])(.*)");
+
+    m_renameFromHeader.setPattern("rename from (.*)+\\n");
+    m_renameToHeader.setPattern("rename to (.*)+\\n");
 }
 
 ParserBase::~ParserBase()
@@ -220,18 +223,41 @@ bool ParserBase::parseUnifiedDiffHeader()
 {
     bool result = false;
 
+    QString renamedFrom = QString();
+    QString renamedTo = QString();
     while (m_diffIterator != m_diffLines.end()) // do not assume we start with the diffheader1 line
     {
         if(!m_unifiedDiffHeader1.exactMatch(*m_diffIterator)) {
+            if(!renamedTo.isNull() && m_diffIterator != m_diffLines.end() && !m_diffIterator->startsWith("index ")) {
+                m_currentModel = new DiffModel(QString("a") + QDir::separator() + renamedFrom, QString("b") + QDir::separator() + renamedTo, renamedFrom, renamedTo);
+
+                ++m_diffIterator;
+                result = true;
+
+                renamedFrom = QString();
+                renamedTo = QString();
+
+                m_models->append(m_currentModel);
+                continue;
+            }
+            if(m_renameFromHeader.exactMatch(*m_diffIterator)) {
+                renamedFrom = m_renameFromHeader.cap(1);
+            } else if(m_renameToHeader.exactMatch(*m_diffIterator)) {
+                renamedTo = m_renameToHeader.cap(1);
+            }
             ++m_diffIterator;
             continue;
         }
         ++m_diffIterator;
-        if(m_diffIterator != m_diffLines.end() && m_unifiedDiffHeader2.exactMatch(*m_diffIterator)) {
-            m_currentModel = new DiffModel(unescapePath(m_unifiedDiffHeader1.cap(1)), unescapePath(m_unifiedDiffHeader2.cap(1)));
+        // (!renamedTo.isNull() && m_diffIterator->startsWith("index ")) means just a rename without edit
+        if((m_diffIterator != m_diffLines.end() && m_unifiedDiffHeader2.exactMatch(*m_diffIterator))) {
+            m_currentModel = new DiffModel(unescapePath(m_unifiedDiffHeader1.cap(1)), unescapePath(m_unifiedDiffHeader2.cap(1)), renamedFrom, renamedTo);
 
             ++m_diffIterator;
             result = true;
+
+            renamedFrom = QString();
+            renamedTo = QString();
 
             break;
         } else {
@@ -255,11 +281,13 @@ bool ParserBase::parseContextHunkHeader()
 
     ++m_diffIterator;
 
-    if(m_diffIterator == m_diffLines.end())
+    if(m_diffIterator == m_diffLines.end()) {
         return false;
+    }
 
-    if(!m_contextHunkHeader2.exactMatch(*(m_diffIterator)))
-        return false; // big fat trouble, aborting...
+    if(!m_contextHunkHeader2.exactMatch(*(m_diffIterator))) {
+        return false;
+    } // big fat trouble, aborting...
 
     ++m_diffIterator;
 
@@ -566,7 +594,7 @@ void ParserBase::checkHeader(const QRegExp& header)
        && !m_diffIterator->startsWith("Index: ") /* SVN diff */
        && !m_diffIterator->startsWith("diff ") /* concatenated diff */
        && !m_diffIterator->startsWith("-- ") /* git format-patch */) {
-           m_malformed = true;
+        m_malformed = true;
     }
 }
 
@@ -660,9 +688,9 @@ DiffModelMap* ParserBase::parseUnified()
     while (parseUnifiedDiffHeader()) {
         while (parseUnifiedHunkHeader())
             parseUnifiedHunkBody();
-        if(m_currentModel->differenceCount() > 0) {
-            m_models->append(m_currentModel);
-        }
+        //if(m_currentModel->differenceCount() > 0) {
+        m_models->append(m_currentModel);
+        //}
         checkHeader(m_unifiedDiffHeader1);
     }
 

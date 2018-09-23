@@ -157,7 +157,8 @@ Settings::Settings()
     m_normalColor = QPalette().color(QPalette::Active, QPalette::Text);
     m_missingColor = Qt::blue;
     m_differentColor = Qt::red;
-
+    m_modifiedMovedColor = QColor(0, 168, 0, 255);
+    m_unmodifiedMovedColor = QColor(128, 128, 128, 255);
 }
 
 Settings::~Settings() {
@@ -289,4 +290,12 @@ const QColor &Settings::missingColor() const {
 }
 const QColor &Settings::differentColor() const {
     return m_differentColor;
+}
+
+const QColor &Settings::modifiedMovedColor() const {
+    return m_modifiedMovedColor;
+}
+
+const QColor &Settings::unmodifiedMovedColor() const {
+    return m_unmodifiedMovedColor;
 }
