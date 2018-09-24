@@ -111,6 +111,9 @@ private:
     DiffSettings* m_diffSettings;
     DiffModelMap* m_models;
     struct Compare::ComparisonInfo* m_info;
+public:
+    Compare::ComparisonInfo* info() const;
+private:
     QString m_encoding;
     QTextCodec* m_textCodec;
     QWidget* m_widgetForKIO;

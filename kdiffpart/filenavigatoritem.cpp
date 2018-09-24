@@ -8,6 +8,7 @@
 #include <QIcon>
 
 #include <KLocalizedString>
+#include <QtCore/QFileInfo>
 
 #include "info.h"
 #include "settings.h"
@@ -36,14 +37,22 @@ FileNavigatorItem::~FileNavigatorItem() {
 
 const QString FileNavigatorItem::localSource() const {
     if(m_model->isRenamed()) {
-        return m_model->modelList()->tmpDir()->path() + QDir::separator() +  "a" + QDir::separator() + m_model->renamedFrom();
+        QString res = m_model->modelList()->tmpDir()->path() + QDir::separator() +  "a" + QDir::separator() + m_model->renamedFrom();
+        if(m_model->modelList()->info()->mode == Compare::BlendingDir || m_model->modelList()->info()->mode == Compare::BlendingFile) {
+            res = m_model->modelList()->tmpDir()->path() + QDir::separator() + "b" + QDir::separator() + m_model->renamedFrom();
+        }
+        return res;
     }
     return m_model->source();
 }
 
 const QString FileNavigatorItem::localDestination() const {
     if(m_model->isRenamed()) {
-        return m_model->modelList()->tmpDir()->path() + QDir::separator() + "b" + QDir::separator() + m_model->renamedTo();
+        QString res =m_model->modelList()->tmpDir()->path() + QDir::separator() + "b" + QDir::separator() + m_model->renamedTo();
+        if(m_model->modelList()->info()->mode == Compare::BlendingDir || m_model->modelList()->info()->mode == Compare::BlendingFile) {
+            res = m_model->modelList()->destinationBasePath() + m_model->renamedTo();
+        }
+        return res;
     }
     return m_model->destination();
 }
@@ -164,7 +173,11 @@ const QString &FileNavigatorItem::key() const {
 bool FileNavigatorItem::sourceExists() const {
     QFileInfo fileInfo(m_model->source());
     if(m_model->isRenamed()) {
-        fileInfo = QFileInfo(m_model->modelList()->tmpDir()->path() + QDir::separator() + "a" + QDir::separator() + m_model->renamedFrom());
+        if(m_model->modelList()->info()->mode == Compare::BlendingDir || m_model->modelList()->info()->mode == Compare::BlendingFile) {
+            fileInfo = QFileInfo(m_model->modelList()->destinationBasePath() + m_model->renamedTo());
+        } else {
+            fileInfo = QFileInfo(m_model->modelList()->tmpDir()->path() + QDir::separator() + "a" + QDir::separator() + m_model->renamedFrom());
+        }
     }
     return fileInfo.exists();
 

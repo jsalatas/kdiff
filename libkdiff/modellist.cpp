@@ -430,26 +430,43 @@ bool ModelList::blendOriginalIntoModelList(const QString& localURL)
     QString fileContents;
 
     if(fi.isDir()) { // is a dir
-        auto modelIt = m_models->begin();
+        auto i = m_models->begin();
         auto mEnd = m_models->end();
-        for (; modelIt != mEnd; ++modelIt) {
-            model = *modelIt;
+        for (; i != mEnd; ++i) {
+            model = *i;
             if(model->source() == "/dev/null") {
                 continue;
             }
-            QString filename = model->destination();
-            if(!filename.startsWith(localURL)) {
-                QString commonPath = StringUtils::rightCommonPartInPaths(model->source(), model->destination());
-                filename = QDir(localURL).filePath(commonPath);
+//            if(model->isRenamed()) {
+//                if(model->isUnmodifiedMoved()) {
+//                    continue;
+//                }
+//                QString filename = model->destination();
+//
+//            } else {
+            if(model->isRenamed()) {
+                qt_noop();
             }
-            QFileInfo fi2(filename);
-            if(fi2.exists() && fi2.isFile()) {
-                fileContents = readFile(filename);
-                result = result && blendFile(model, fileContents);
-            } else {
-                fileContents.truncate(0);
-                result = result && blendFile(model, fileContents);
-            }
+                QString filename = model->destination();
+                if(!filename.startsWith(localURL)) {
+                    if(model->isRenamed()) {
+                        filename = QDir(localURL).filePath(model->renamedFrom());
+                    } else {
+                        QString commonPath = StringUtils::rightCommonPartInPaths(model->source(), model->destination());
+                        filename = QDir(localURL).filePath(commonPath);
+                    }
+                }
+                QFileInfo fi2(filename);
+                if(fi2.exists() && fi2.isFile()) {
+                    fileContents = readFile(filename);
+                    result = result && blendFile(model, fileContents);
+                    qt_noop();
+                } else {
+                    fileContents.truncate(0);
+                    result = result && blendFile(model, fileContents);
+                    qt_noop();
+                }
+//            }
         }
     } else if(fi.isFile()) { // is a file
         fileContents = readFile(localURL);
@@ -836,12 +853,13 @@ void ModelList::collectLocalFiles() {
                     model->key(path);
                 }
             }
+
             model->setDestinationFile(filename);
             model ->destinationUrl(QUrl::fromUserInput(m_tmpDir->path() + QDir::separator() + "b" + QDir::separator() + m_destinationDisplayBasePath + path));
             if(!QFileInfo(m_sourceBasePath+path).exists()) {
                 model->setSourceFile(m_sourceBasePath+path);
                 if(m_info->mode == Compare::BlendingDir || m_info->mode == Compare::BlendingFile) {
-                    model ->sourceUrl(QUrl::fromUserInput(m_tmpDir->path() + QDir::separator() + "a" + QDir::separator() + m_sourceDisplayBasePath + path));
+                    model ->sourceUrl(QUrl::fromUserInput(m_destinationBasePath + path));
                 }
             }
         }
@@ -935,4 +953,8 @@ void ModelList::deleteItem(QString path, bool recursively) {
 const QTemporaryDir* ModelList::tmpDir() const
 {
     return m_tmpDir;
+}
+Compare::ComparisonInfo* ModelList::info() const
+{
+    return m_info;
 }
