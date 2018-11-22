@@ -31,6 +31,7 @@ target_link_libraries(kdiffparser
         KF5::I18n
         KF5::KIOCore
         KF5::XmlGui
+        KF5::TextEditor
         )
 
 set_target_properties(kdiffparser PROPERTIES VERSION ${KDIFF_LIB_VERSION} SOVERSION ${KDIFF_LIB_SOVERSION})

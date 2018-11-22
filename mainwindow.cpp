@@ -15,7 +15,6 @@
 #include <KActionCollection>
 #include <KStandardAction>
 #include <QTextEdit>
-#include <kicon.h>
 #include <KMessageBox>
 #include <kshortcutsdialog.h>
 #include <KXMLGUIFactory>
